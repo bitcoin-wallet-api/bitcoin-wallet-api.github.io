@@ -44,16 +44,11 @@
       <code>
         <pre class='example highlight'>
           bitcoin.getWallet(function(w) {
-            var input = w.getUTXOs(function(utxos) {
-               // Uses third-party bitcore library
-               var tx = new bitcore.TransactionBuilder(opts).setUnspent(utxos).setOutputs(outs).build().serialize();
-               w.sign(tx, function(s) {
-                 var signed = new bitcore.Transaction()
-                 signed.parse(new bitcore.buffertools.Buffer(s))
-                 if (signed.isComplete())
-                   send(signed.serialize())
-               })
-
+            w.authorizeAmount(1, null, function(inputs, outputs, ticket) {
+             var tx = prepareTx(inputs, outputs);
+              w.sign(tx, ticket, function(s) {
+                 sendTx(signed.serialize())
+              })
             })
           })
         </pre>
@@ -68,6 +63,80 @@
     <section class='informative'>
       <h2>Implementation considerations</h2>
     </section>
+
+    <section>
+      <h2>API Description</h2>
+
+
+      <section>
+        <h3>Common Types</h3>
+        <section>
+        <h4>Input</h4>
+          <dl title='interface Input' class='idl'>
+            <dt>readonly attribute Uint8Array binary</dt>
+          </dl>
+        </section>
+        <section>
+        <h4>Output</h4>
+          <dl title='interface Output' class='idl'>
+            <dt>readonly attribute Uint8Array binary</dt>
+          </dl>
+        </section>
+      </section>
+
+
+      <section>
+        <h3>Bitcoin interface</h3>
+        <dl title='interface Bitcoin' class='idl'>
+          <dt>void getWallet (WalletCallback successCallback, optional FailureCallback failureCallback)</dt>
+          <dd>Upon user's confirmation, wallet MUST return its interface. Wallet MAY cache the confirmation for a certain period
+          of time for the origin domain only for the sake of convenience.</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h3>Wallet interface</h3>
+        <dl title='interface Wallet' class='idl'>
+          <dt>void authorizeAmount (int amount, int? timeout, TransactionAuthorizationCallback successCallback, optional FailureCallback failureCallback)</dt>
+          <dd></dd>
+          <dt>void signTransaction (Uint8Array encodedTxn, Uint8Array ticket, TransactionCallback successCallback, optional FailureCallback failureCallback)</dt>
+          <dd></dd>
+        </dl>
+      </section>
+
+      <section>
+        <h3>Callbacks</h3>
+        <section>
+        <h4>FailureCallback</h4>
+          <dl title='callback FailureCallback = void' class='idl'>
+            <dt>Any error</dt>
+          </dl>
+        </section>
+        <section>
+        <h4>WalletCallback</h4>
+          <dl title='callback WalletCallback = void' class='idl'>
+            <dt>Wallet wallet</dt>
+          </dl>
+       </section>
+       <section>
+       <h4>TransactionAuthorizationCallback</h4>
+         <dl title='callback TransactionAuthorizationCallback = void' class='idl'>
+           <dt>Uint8Array ticket</dt>
+           <dt>Input[] input</dt>
+           <dt>Output[] output</dt>
+         </dl>
+       </section>
+       <section>
+       <h4>TransactionCallback</h4>
+         <dl title='callback TransactionCallback = void' class='idl'>
+           <dt>Uint8Array transaction</dt>
+         </dl>
+       </section>
+      </section>
+
+
+    </section>
+
 
   </body>
 </html>
