@@ -46,9 +46,7 @@
           bitcoin.getWallet(function(w) {
             w.authorizeAmount(1, null, 'Requesting 1 BTC for X', function(token, inputs, outputs) {
              var tx = prepareTx(inputs, outputs);
-              w.sign(tx, token, function(s) {
-                 sendTx(signed.serialize())
-              })
+              w.sign(tx, token, sendTx)
             })
           })
         </pre>
