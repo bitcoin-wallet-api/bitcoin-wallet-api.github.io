@@ -44,9 +44,9 @@
       <code>
         <pre class='example highlight'>
           bitcoin.getWallet(function(w) {
-            w.authorizeAmount(1, null, 'Requesting 1 BTC for X', function(ticket, inputs, outputs) {
+            w.authorizeAmount(1, null, 'Requesting 1 BTC for X', function(token, inputs, outputs) {
              var tx = prepareTx(inputs, outputs);
-              w.sign(tx, ticket, function(s) {
+              w.sign(tx, token, function(s) {
                  sendTx(signed.serialize())
               })
             })
@@ -99,7 +99,7 @@
         <dl title='interface Wallet' class='idl'>
           <dt>void authorizeAmount (int amount, int? timeout, String? description, TransactionAuthorizationCallback successCallback, optional FailureCallback failureCallback)</dt>
           <dd></dd>
-          <dt>void signTransaction (Uint8Array encodedTxn, Uint8Array ticket, TransactionCallback successCallback, optional FailureCallback failureCallback)</dt>
+          <dt>void signTransaction (Uint8Array encodedTxn, Uint8Array token, TransactionCallback successCallback, optional FailureCallback failureCallback)</dt>
           <dd></dd>
         </dl>
       </section>
@@ -121,7 +121,7 @@
        <section>
        <h4>TransactionAuthorizationCallback</h4>
          <dl title='callback TransactionAuthorizationCallback = void' class='idl'>
-           <dt>Uint8Array ticket</dt>
+           <dt>Uint8Array token</dt>
            <dt>Input[] input</dt>
            <dt>Output[] output</dt>
          </dl>
